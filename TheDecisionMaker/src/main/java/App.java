@@ -1,4 +1,6 @@
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.*;
 public class App {
@@ -201,18 +203,17 @@ public class App {
     public static String option2(){
         Scanner input = new Scanner(System.in);
         String endOrNo = "reset";
-
+        File toDoList = new File("src/main/java/ToDoCategories");
         //Make a list that creates categories for the user to pick from
         List<String> toDoCategories = new ArrayList<>();
-        toDoCategories.add("watch a tv show");
-        toDoCategories.add("watch an anime");
-        toDoCategories.add("watch a movie");
-        toDoCategories.add("play a board game");
-        toDoCategories.add("play a card game");
-        toDoCategories.add("play a video game");
-        toDoCategories.add("get something to eat");
-        toDoCategories.add("go out");
-        toDoCategories.add("do chores");
+        try(Scanner dataInput = new Scanner(toDoList)){
+            while(dataInput.hasNextLine()){
+                String lineOfInput = dataInput.nextLine();
+                toDoCategories.add(lineOfInput);
+            }
+        }catch (FileNotFoundException e){
+            System.err.println("File not found");
+        }
         //Display all categories for user to pick from
         System.out.println("Please select one of the given categories, and type it as read. " + toDoCategories);
         String chosenCategory = input.nextLine().toLowerCase();
@@ -221,7 +222,7 @@ public class App {
         //Method takes input given by user and returns a list of options in the requested category
         //Stores the value returned from method in new list
         optionsInCategory = new ArrayList<>(listForGivenCategory(chosenCategory ,toDoCategories));
-        //Mehod (listForGivenCategory) also prompts the user to input their choice from the given list, or to let us select randomly
+        //Method (listForGivenCategory) also prompts the user to input their choice from the given list, or to let us select randomly
         //This way the communication with the program can be more clear and direct for each individual category without making a big mess in this method
         String choiceFromOptions = input.nextLine().toLowerCase();
         //If input from user does not match any options, program will start over at point of input
@@ -238,8 +239,7 @@ public class App {
         if(choiceFromOptions.equals("random")){
             //randomly select an option from tv show list
             Random randomChoice = new Random();
-            String randomSelection = optionsInCategory.get(randomChoice.nextInt(optionsInCategory.size()));
-            choiceFromOptions = randomSelection;
+            choiceFromOptions = optionsInCategory.get(randomChoice.nextInt(optionsInCategory.size()));
             System.out.println("We have selected " + choiceFromOptions);
         }
         else{
